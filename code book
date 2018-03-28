@@ -1,51 +1,107 @@
-if(!file.exists("./data")) dir.create("./data")
-fileUrl <-"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-download.file(fileUrl, destfile = "./data/getcleandataw4project.zip")
-w4project <- unzip("./data/getcleandataw4project.zip", exdir = "./data")
-w4project
+•	subject
+The group of 30 volunteers who carried out the experiment
+1 - subject 1
+2 - subject 2
+3 - subject 3
+4 - subject 4
+5 - subject 5
+6 - subject 6
+7 - subject 7
+8 - subject 8
+9 - subject 9
+10 - subject 10
+11 - subject 11
+12 - subject 12
+13 - subject 13
+14 - subject 14
+15 - subject 15
+16 - subject 16
+17 - subject 17
+18 - subject 18
+19 - subject 19
+20 - subject 20
+21 - subject 21
+22 - subject 22
+23 - subject 23
+24 - subject 24
+25 - subject 25
+26 - subject 26
+27 - subject 27
+28 - subject 28
+29 - subject 29
+30 - subject 30
+•	activity The six activities that each person performed
+WALKING
+WALKING_UPSTAIRS
+WALKING_DOWNSTAIRS
+SITTING
+STANDING
+LAYING
+•	The features from inertial sensor
+TimeBodyAcc-mean()-X
+TimeBodyAcc-mean()-Y
+TimeBodyAcc-mean()-Z
+TimeBodyAcc-std()-X
+TimeBodyAcc-std()-Y
+TimeBodyAcc-std()-Z
+TimeGravityAcc-mean()-X
+TimeGravityAcc-mean()-Y
+TimeGravityAcc-mean()-Z
+TimeGravityAcc-std()-X
+TimeGravityAcc-std()-Y
+TimeGravityAcc-std()-Z
+TimeBodyAccJerk-mean()-X
+TimeBodyAccJerk-mean()-Y
+TimeBodyAccJerk-mean()-Z
+TimeBodyAccJerk-std()-X
+TimeBodyAccJerk-std()-Y
+TimeBodyAccJerk-std()-Z
+TimeBodyGyro-mean()-X
+TimeBodyGyro-mean()-Y
+TimeBodyGyro-mean()-Z
+TimeBodyGyro-std()-X
+TimeBodyGyro-std()-Y
+TimeBodyGyro-std()-Z
+TimeBodyGyroJerk-mean()-X
+TimeBodyGyroJerk-mean()-Y
+TimeBodyGyroJerk-mean()-Z
+TimeBodyGyroJerk-std()-X
+TimeBodyGyroJerk-std()-Y
+TimeBodyGyroJerk-std()-Z
+TimeBodyAccMag-mean()
+TimeBodyAccMag-std()
+TimeGravityAccMag-mean()
+TimeGravityAccMag-std()
+TimeBodyAccJerkMag-mean()
+TimeBodyAccJerkMag-std()
+TimeBodyGyroMag-mean()
+TimeBodyGyroMag-std()
+TimeBodyGyroJerkMag-mean()
+TimeBodyGyroJerkMag-std()
+FreqBodyAcc-mean()-X
+FreqBodyAcc-mean()-Y
+FreqBodyAcc-mean()-Z
+FreqBodyAcc-std()-X
+FreqBodyAcc-std()-Y
+FreqBodyAcc-std()-Z
+FreqBodyAccJerk-mean()-X
+FreqBodyAccJerk-mean()-Y
+FreqBodyAccJerk-mean()-Z
+FreqBodyAccJerk-std()-X
+FreqBodyAccJerk-std()-Y
+FreqBodyAccJerk-std()-Z
+FreqBodyGyro-mean()-X
+FreqBodyGyro-mean()-Y
+FreqBodyGyro-mean()-Z
+FreqBodyGyro-std()-X
+FreqBodyGyro-std()-Y
+FreqBodyGyro-std()-Z
+FreqBodyAccMag-mean()
+FreqBodyAccMag-std()
+FreqBodyAccJerkMag-mean()
+FreqBodyAccJerkMag-std()
+FreqBodyGyroMag-mean()
+FreqBodyGyroMag-std()
+FreqBodyGyroJerkMag-mean()
+FreqBodyGyroJerkMag-std()
 
-features <- read.csv("./data/UCI HAR Dataset/features.txt", header = FALSE, sep = "")
-features <- as.character(features[,2])
-
-X_train <- read.table("./data/UCI HAR Dataset/train/X_train.txt")
-Y_train <- read.csv("./data/UCI HAR Dataset/train/y_train.txt", header=FALSE, sep = "")
-Subject_train <- read.csv("./data/UCI HAR Dataset/train/subject_train.txt", header=FALSE, sep = "")
-train<-data.frame(Subject_train, Y_train, X_train)
-names(train)<-c(c("subject", "activity"), features)
-
-X_test <- read.table("./data/UCI HAR Dataset/test/X_test.txt")
-Y_test <- read.csv("./data/UCI HAR Dataset/test/y_test.txt", header=FALSE, sep = "")
-Subject_test <- read.csv("./data/UCI HAR Dataset/test/subject_test.txt", header=FALSE, sep = "")
-test<-data.frame(Subject_test, Y_test, X_test)
-names(test)<-c(c("subject", "activity"), features)
-
-#1. Merges the training and the test sets to create one data set.#
-Merged <- rbind(train, test)
-
-#2. Extracts only the measurements on the mean and standard deviation for each measurement.#
-mean_std.sel<-grep("mean|std", features)
-Merged.sub<- Merged[,c(1, 2, mean_std.sel + 2)]
-
-#3. Uses descriptive activity names to name the activities in the data set.#
-activity.labels <- read.table('./data/UCI HAR Dataset/activity_labels.txt', header = FALSE)
-activity.labels <- as.character(activity.labels[,2])
-Merged.sub$activity <- activity.labels[Merged.sub$activity]
-
-#4. Appropriately labels the data set with descriptive variable names.#
-
-names(Merged.sub) <- gsub("[(][)]", "", names(Merged.sub))
-names(Merged.sub) <- gsub("^t", "Time", names(Merged.sub))
-names(Merged.sub) <- gsub("^f", "Frequency", names(Merged.sub))
-names(Merged.sub) <- gsub("Acc", "Accelerometer", names(Merged.sub))
-names(Merged.sub) <- gsub("Gyro", "Gyroscope", names(Merged.sub))
-names(Merged.sub) <- gsub("Mag", "Magnitude", names(Merged.sub))
-names(Merged.sub) <- gsub("-mean-", "Mean", names(Merged.sub))
-names(Merged.sub) <- gsub("-std-", "STD", names(Merged.sub))
-
-
-#5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.#
-
-dim(Merged.sub)
-head(Merged.sub,1)
-data.tidy <- aggregate(Merged.sub[,3:81], by = list(activity = Merged.sub$activity, subject = Merged.sub$subject),FUN = mean)
-write.table(x = data.tidy, file = "GC_data_W4_assign.txt", row.names = FALSE)
