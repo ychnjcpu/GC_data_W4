@@ -1,4 +1,5 @@
-# GC_data_W4_assign
+# GC_data_W4_assign#
+# download and unzip data, name the data file as "w4project"#
 if(!file.exists("./data")) dir.create("./data")
 fileUrl <-"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 download.file(fileUrl, destfile = "./data/getcleandataw4project.zip")
