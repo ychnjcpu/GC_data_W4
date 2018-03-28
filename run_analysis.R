@@ -19,18 +19,22 @@ Subject_test <- read.csv("./data/UCI HAR Dataset/test/subject_test.txt", header=
 test<-data.frame(Subject_test, Y_test, X_test)
 names(test)<-c(c("subject", "activity"), features)
 
+##################################################################
 #1. Merges the training and the test sets to create one data set.#
 Merged <- rbind(train, test)
 
+############################################################################################
 #2. Extracts only the measurements on the mean and standard deviation for each measurement.#
 mean_std.sel<-grep("mean|std", features)
 Merged.sub<- Merged[,c(1, 2, mean_std.sel + 2)]
 
+############################################################################
 #3. Uses descriptive activity names to name the activities in the data set.#
 activity.labels <- read.table('./data/UCI HAR Dataset/activity_labels.txt', header = FALSE)
 activity.labels <- as.character(activity.labels[,2])
 Merged.sub$activity <- activity.labels[Merged.sub$activity]
 
+#######################################################################
 #4. Appropriately labels the data set with descriptive variable names.#
 
 names(Merged.sub) <- gsub("[(][)]", "", names(Merged.sub))
@@ -42,13 +46,10 @@ names(Merged.sub) <- gsub("Mag", "Magnitude", names(Merged.sub))
 names(Merged.sub) <- gsub("-mean-", "Mean", names(Merged.sub))
 names(Merged.sub) <- gsub("-std-", "STD", names(Merged.sub))
 
-
+###################################################################################################################################################
 #5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.#
 
 dim(Merged.sub)
 head(Merged.sub,1)
 data.tidy <- aggregate(Merged.sub[,3:81], by = list(activity = Merged.sub$activity, subject = Merged.sub$subject),FUN = mean)
 write.table(x = data.tidy, file = "GC_data_W4_assign.txt", row.names = FALSE)
-
-
-
